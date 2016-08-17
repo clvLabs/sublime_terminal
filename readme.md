@@ -1,99 +1,102 @@
 # Sublime Terminal
 
-Shortcuts and menu entries for opening a terminal at the current file, or the current root project folder in [Sublime Text](http://sublimetext.com/).
+My personal fork of the great [sublime_terminal by Will Bond](https://github.com/wbond/sublime_terminal). (Many, many thanks Will!)
 
-## Features
+When working with Sublime Text I constantly use Will's plugin to open terminal windows, both `cmd.exe` and `git-bash.exe`. (Yes, I'm a Windows user...)
 
- - Opens a terminal in the folder containing the currently edited file
- - Opens a terminal in the project folder containing the currently edited file
+Due to the fact that the `terminal` setting could only be set once in the user settings file, I finally choose `cmd.exe` as my default. This resulted in having a spare `cmd` floating in my desktop every time I opened a `bash` window from ST, as the `bash` window was called from the default `cmd`.
 
-## Installation
+After some settings tweaking I could avoid the effect in one of my computers, but when trying to do it by memory on another computer I couldn't remember the *trick*. So, I decided to go the long path... modifying the plugin so it works the way I expect.
 
-Download [Package Control](https://packagecontrol.io/) and use the *Package Control: Install Package* command from the command palette. Using Package Control ensures Terminal will stay up to date automatically.
+What I wanted was to be able to specify a different `terminal` for every one of my keyboard shortcuts, so I can choose amongst a couple more CLIs.
 
-## Usage
+This README only adds specifics about my changes, and complements the [original README](https://github.com/wbond/sublime_terminal/blob/master/readme.md). Please read it before reading this document.
 
- - **Open Terminal at File**
-     Press *ctrl+shift+t* on Windows and Linux, or *cmd+shift+t* on OS X
- - **Open Terminal at Project Folder**
-     Press *ctrl+alt+shift+t* on Windows and Linux, or *cmd+alt+shift+t* on OS X
+## Features (fork)
 
-In addition to the key bindings, terminals can also be opened via the editor context menu and the sidebar context menus.
+ - Allows setting a different `terminal` for different keyboard combinations.
 
-## Package Settings
+## Installation (fork)
 
-The default settings can be viewed by accessing the ***Preferences > Package Settings > Terminal > Settings – Default*** menu entry. To ensure settings are not lost when the package is upgraded, make sure all edits are saved to ***Settings – User***.
+The easiest way to go is:
 
- - **terminal**
-     - The terminal to execute, will default to the OS default if blank. OS X users may enter *iTerm.sh* to launch iTerm if installed.
-     - *Default:* ***""***
- - **parameters**
-     - The parameters to pass to the terminal. These parameters will be used if no [custom parameters](#custom-parameters) are passed via a key binding.
-     - *Default:* ***[]***
+* Make sure you have [Package Control](https://packagecontrol.io) installed.
+* Install the original [Terminal](https://packagecontrol.io/packages/Terminal) using Package Control.
+* Download a ZIP version of this repo
+* Manually replace the contents of your `packages/terminal` folder.
 
-### Examples
+If you prefer to do it the *git way*, you should already know how to do it. (sorry if you don't)
 
-Here are some example setups:
+### Examples (fork)
 
-#### Cmder on Windows
+I will use my own configuration as an example.
 
+Note that I'm leaving the configuration on `terminal.sublime-settings` empty and set all preferences in my keyboard shortcuts.
+
+The contents of `terminal.sublime-settings` for all examples is:
 ```js
 {
-  // Replace with your own path to cmder.exe
-  "terminal": "C:\\Program Files\\cmder_mini\\cmder.exe",
-  "parameters": ["/START", "%CWD%"]
+  "terminal": "",
+  "parameters": [ ]
 }
 ```
 
-#### xterm on GNU/Linux
+#### cmd.exe
 
+`default.sublime.keymap`
 ```js
-{
-  "terminal": "xterm"
-}
+    {
+      "keys": ["ctrl+shift+t"],
+      "command": "open_terminal",
+      "args": {
+        "terminal": "cmd.exe",
+        "parameters": [ "/K", "mode con: cols=200" ]
+      }
+   },
 ```
 
-#### iTerm on OS X
+#### git-bash.exe
 
+`default.sublime.keymap`
 ```js
-{
-  "terminal": "iTerm.sh"
-}
+    {
+      "keys": ["ctrl+alt+t"],
+      "command": "open_terminal",
+      "args": {
+        "terminal": "git-bash.exe",
+        "parameters": [ "-a" ]
+      }
+    },
 ```
 
-#### iTerm on OS X with tabs
+#### python console
 
+`default.sublime.keymap`
 ```js
-{
-  "terminal": "iTerm.sh",
-  "parameters": ["--open-in-tab"]
-}
+    {
+      "keys": ["ctrl+alt+p"],
+      "command": "open_terminal",
+      "args": {
+        "terminal": "python.exe",
+        "parameters": [ ]
+      }
+    },
 ```
 
-## Custom Parameters
+#### Node.JS console
 
-With the parameters argument to the *open_terminal* and *open_terminal_project_folder* commands, it is possible to construct custom terminal environments.
-
-The following is an example of passing the parameters *-T 'Custom Window Title'* to a terminal. Please note that this example is just an example, and is tailored to the XFCE terminal application. Your terminal may use the `-T` option for some other features or setting. Custom key bindings such as this would be added to the file opened when accessing the *Preferences > Key Bindings – User* menu entry (the file name varies by operating system).
-
-```json
-{
-  "keys": ["ctrl+alt+t"],
-  "command": "open_terminal",
-  "args": {
-    "parameters": ["-T", "Custom Window Title"]
-  }
-}
+`default.sublime.keymap`
+```js
+    {
+      "keys": ["ctrl+alt+n"],
+      "command": "open_terminal",
+      "args": {
+        "terminal": "node.exe",
+        "parameters": [ ]
+      }
+    },
 ```
 
-A parameter may also contain the *%CWD%* placeholder, which will be substituted with the current working directory the terminal was opened to.
+## Custom Parameters (fork)
 
-```json
-{
-  "keys": ["ctrl+alt+t"],
-  "command": "open_terminal",
-  "args": {
-    "parameters": ["-T", "Working in directory %CWD%"]
-  }
-}
-```
+The only thing modified in this fork is that the `terminal` setting in `terminal.sublime-settings` can now be overriden in `default.sublime.keymap`.
