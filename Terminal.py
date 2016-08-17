@@ -127,15 +127,19 @@ class TerminalCommand():
             sublime.error_message('Terminal: No place to open terminal to')
             return False
 
-    def run_terminal(self, dir_, parameters):
+    def run_terminal(self, dir_, terminal=None, parameters=None):
         try:
             if not dir_:
                 raise NotFoundError('The file open in the selected view has ' +
                     'not yet been saved')
             for k, v in enumerate(parameters):
                 parameters[k] = v.replace('%CWD%', dir_)
-            args = [TerminalSelector.get()]
+            if terminal is None:
+              args = [TerminalSelector.get()]
+            else:
+              args = [terminal]
             args.extend(parameters)
+
             encoding = locale.getpreferredencoding(do_setlocale=True)
             if sys.version_info >= (3,):
                 cwd = dir_
@@ -152,7 +156,7 @@ class TerminalCommand():
 
 
 class OpenTerminalCommand(sublime_plugin.WindowCommand, TerminalCommand):
-    def run(self, paths=[], parameters=None):
+    def run(self, paths=[], terminal=None, parameters=None):
         path = self.get_path(paths)
         if not path:
             return
@@ -163,12 +167,12 @@ class OpenTerminalCommand(sublime_plugin.WindowCommand, TerminalCommand):
         if os.path.isfile(path):
             path = os.path.dirname(path)
 
-        self.run_terminal(path, parameters)
+        self.run_terminal(path, terminal=terminal, parameters=parameters)
 
 
 class OpenTerminalProjectFolderCommand(sublime_plugin.WindowCommand,
         TerminalCommand):
-    def run(self, paths=[], parameters=None):
+    def run(self, paths=[], terminal=None, parameters=None):
         path = self.get_path(paths)
         if not path:
             return
